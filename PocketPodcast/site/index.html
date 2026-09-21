@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Pocket Podcast turns multi-camera or single-camera podcast recordings into a finished, speaker-cut episode on iPhone, iPad and Mac — with transcript, clips and metadata.">
+<meta name="color-scheme" content="dark">
 <title>Pocket Podcast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -128,7 +135,8 @@
   .step .art .tablet { width: min(560px, 100%); }
   .step .art .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
   @media (max-width: 860px) { .step { grid-template-columns: 1fr; } .step.flip .copy { order: 0; } .step .art .pair { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 520px) { .step .art .pair { grid-template-columns: 1fr; } }
+  /* Phones: keep pairs two-up — two small phones read fine and the page stays short. */
+  @media (max-width: 520px) { .step .art .pair { gap: 12px; } .step .art .pair .phone { border-radius: 30px; padding: 8px; } .step .art .pair .phone img { border-radius: 22px; } }
 
   /* feature grid */
   .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
@@ -181,7 +189,8 @@
   footer .row { display: flex; flex-wrap: wrap; gap: 18px 28px; justify-content: space-between; }
   footer a { color: var(--muted); text-decoration: none; }
 </style>
-
+</head>
+<body>
 <div class="wrap">
   <nav class="nav" aria-label="Site">
     <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Pocket Podcast</a>
@@ -530,3 +539,5 @@
     <p>Not intended for recordings containing protected health information. ElevenLabs, OpenRouter and Claude are trademarks of their respective owners; you contract with them directly under your own account.</p>
   </footer>
 </div>
+</body>
+</html>
