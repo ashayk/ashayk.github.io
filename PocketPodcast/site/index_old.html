@@ -1,0 +1,476 @@
+<title>Pocket Podcast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* ---------- tokens */
+  :root {
+    --bg: #121110;
+    --bg-2: #1a1816;
+    --surface: #1f1c19;
+    --line: #2c2825;
+    --line-strong: #3a3531;
+    --text: #f1ece4;
+    --muted: #9b948a;
+    --faint: #6d665d;
+    --accent: #d96b33;      /* Speaker 1 — the app's own orange */
+    --accent-deep: #b84d18;  /* button ground: deep enough for white text (4.75:1) */
+    --accent-ink: #fff5ee;
+    --s2: #5a60e0;          /* Speaker 2 */
+    --s3: #2f9a6e;          /* Speaker 3 */
+    --bezel: #060606;
+    --bezel-line: #2a2a2a;
+    --shadow: 0 30px 60px -30px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+  /* Single theme, on purpose: the apps are dark and the screenshots are dark,
+     so the page stays dark whatever the viewer's setting. */
+  :root[data-theme="light"], :root[data-theme="dark"] { color-scheme: dark; }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; animation: none !important; } }
+
+  h1, h2, h3 { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(2.6rem, 7vw, 5.4rem); font-variation-settings: "opsz" 96; }
+  h2 { font-size: clamp(1.9rem, 4vw, 3rem); font-variation-settings: "opsz" 72; }
+  h3 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  p { margin: 0; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  .mono { font-family: "IBM Plex Mono", "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+  .eyebrow { font-family: "IBM Plex Mono", Menlo, monospace; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .lede { font-size: 1.2rem; color: var(--muted); max-width: 60ch; line-height: 1.5; }
+  .measure { max-width: 62ch; }
+
+  .wrap { width: min(1180px, 100%); margin-inline: auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+  /* ---------- nav */
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 22px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; text-decoration: none; }
+  .brand .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); box-shadow: 18px 0 0 -3px var(--s2), 32px 0 0 -6px var(--s3); margin-right: 26px; }
+  .nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 26px; font-size: .95rem; }
+  .nav ul a { text-decoration: none; color: var(--muted); }
+  .nav ul a:hover { color: var(--text); }
+  @media (max-width: 760px) { .nav ul { display: none; } }
+
+  /* ---------- buttons */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: .95rem; border: 1px solid var(--line-strong); color: var(--text); background: var(--surface); }
+  .btn.primary { background: var(--accent-deep); color: var(--accent-ink); border-color: transparent; }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent); color: #1a1210; }
+
+  /* Apple badges: drawn inline for now; swap for the official artwork from
+     developer.apple.com/app-store/marketing before launch. */
+  .badge { display: inline-block; line-height: 0; }
+  .badge svg { display: block; height: 54px; width: auto; }
+
+  /* ---------- speaker track: the diarization timeline, the thing the whole product is built on */
+  .track { display: grid; gap: 8px; }
+  .track .bar { display: flex; gap: 3px; height: 14px; }
+  .track .bar span { border-radius: 3px; background: var(--line-strong); }
+  .track .bar .a { background: var(--accent); }
+  .track .bar .b { background: var(--s2); }
+  .track .bar .c { background: var(--s3); }
+  .track .ticks { display: flex; justify-content: space-between; font-family: "IBM Plex Mono", monospace; font-size: .72rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .track.thin .bar { height: 6px; }
+
+  /* ---------- hero */
+  .hero { padding-block: clamp(40px, 8vw, 96px) 24px; display: grid; gap: 40px; }
+  .hero-head { display: grid; gap: 22px; max-width: 900px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .hero-cta .note { font-size: .85rem; color: var(--faint); }
+  .hero-stage { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: end; margin-top: 12px; }
+  .hero-stage .tablet { z-index: 0; }
+  .hero-stage .phone { z-index: 1; margin-bottom: -12px; }
+  @media (max-width: 820px) { .hero-stage { grid-template-columns: 1fr; } .hero-stage .phone { width: 220px; margin: 0 auto; } }
+
+  /* ---------- device frames */
+  .device { background: var(--bezel); border: 1px solid var(--bezel-line); box-shadow: var(--shadow); max-width: 100%; }
+  .device img { display: block; width: 100%; height: auto; }
+  .phone { border-radius: 42px; padding: 11px; width: 100%; }
+  .phone img { border-radius: 32px; }
+  .phone.land { border-radius: 36px; padding: 10px; }
+  .phone.land img { border-radius: 26px; }
+  .tablet { border-radius: 26px; padding: 16px; }
+  .tablet img { border-radius: 14px; }
+  .mac { border-radius: 12px; padding: 0; overflow: hidden; }
+  .mac .bar { height: 34px; display: flex; align-items: center; gap: 8px; padding-left: 14px; background: #2b2b2b; border-bottom: 1px solid #000; }
+  .mac .bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .mac .bar i:nth-child(2) { background: #febc2e; } .mac .bar i:nth-child(3) { background: #28c840; }
+  .mac .slot { aspect-ratio: 16 / 10; display: grid; place-items: center; color: #777; font-family: "IBM Plex Mono", monospace; font-size: .85rem; background: repeating-linear-gradient(135deg, #171717 0 14px, #1c1c1c 14px 28px); }
+
+  /* ---------- sections */
+  section { padding-block: clamp(56px, 8vw, 112px); border-top: 1px solid var(--line); }
+  .sec-head { display: grid; gap: 14px; max-width: 760px; margin-bottom: clamp(32px, 5vw, 64px); }
+
+  /* workflow */
+  .step { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 5vw, 72px); align-items: center; padding-block: clamp(36px, 5vw, 64px); }
+  .step + .step { border-top: 1px dashed var(--line); }
+  .step.flip .copy { order: 2; }
+  .step .copy { display: grid; gap: 16px; }
+  .step p { color: var(--muted); max-width: 52ch; }
+  .step ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; }
+  .step ul li::marker { color: var(--accent); }
+  .step .art { display: flex; justify-content: center; align-items: center; gap: 20px; }
+  .step .art .phone { width: min(300px, 100%); }
+  .step .art .tablet { width: min(560px, 100%); }
+  .step .art .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .step { grid-template-columns: 1fr; } .step.flip .copy { order: 0; } .step .art .pair { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .step .art .pair { grid-template-columns: 1fr; } }
+
+  /* feature grid */
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .grid > div { background: var(--bg); padding: 26px 24px; display: grid; gap: 10px; align-content: start; }
+  .grid h3 { font-size: 1.1rem; }
+  .grid p { color: var(--muted); font-size: .97rem; }
+  .grid .k { font-family: "IBM Plex Mono", monospace; font-size: .74rem; color: var(--faint); letter-spacing: .06em; }
+  @media (max-width: 860px) { .grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+
+  /* clips: what you get */
+  .clips { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+  @media (max-width: 860px) { .clips { grid-template-columns: 1fr; } }
+  .folder { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+  .folder .head { padding: 12px 16px; border-bottom: 1px solid var(--line); font-family: "IBM Plex Mono", monospace; font-size: .8rem; color: var(--muted); display: flex; justify-content: space-between; }
+  .folder ul { list-style: none; margin: 0; padding: 6px 0; }
+  .folder li { display: grid; grid-template-columns: 26px 1fr auto; gap: 12px; align-items: center; padding: 9px 16px; font-size: .95rem; }
+  .folder li + li { border-top: 1px solid var(--line); }
+  .folder li .size { font-family: "IBM Plex Mono", monospace; font-size: .8rem; color: var(--faint); }
+  .folder li .ic { width: 22px; height: 22px; border-radius: 5px; background: var(--line-strong); }
+  .folder li .ic.vid { background: var(--accent); } .folder li .ic.txt { background: var(--s2); } .folder li .ic.md { background: var(--s3); }
+  .md { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 22px 24px; font-size: .95rem; display: grid; gap: 14px; }
+  .md .h { font-family: "IBM Plex Mono", monospace; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .md ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .md .ch { display: grid; grid-template-columns: 52px 1fr; gap: 12px; font-variant-numeric: tabular-nums; }
+  .md .ch .mono { color: var(--accent); }
+  .md p { color: var(--muted); }
+  .types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 8px; }
+  .types div { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 4px; }
+  .types b { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; }
+  .types span { font-family: "IBM Plex Mono", monospace; font-size: .78rem; color: var(--muted); }
+  @media (max-width: 520px) { .types { grid-template-columns: 1fr; } }
+
+  /* mac */
+  .mac-sec { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+  @media (max-width: 860px) { .mac-sec { grid-template-columns: 1fr; } }
+  .mac-sec .copy { display: grid; gap: 16px; }
+  .mac-sec p, .mac-sec li { color: var(--muted); }
+  .mac-sec ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+
+  /* keys */
+  .keys { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+  @media (max-width: 860px) { .keys { grid-template-columns: 1fr; } }
+  .keys .copy { display: grid; gap: 16px; }
+  .keys p { color: var(--muted); }
+  .keys .phone { width: min(300px, 100%); margin-inline: auto; }
+  .cost { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: .85rem; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--text); }
+
+  footer { padding-block: 40px 60px; border-top: 1px solid var(--line); color: var(--faint); font-size: .88rem; display: grid; gap: 14px; }
+  footer .row { display: flex; flex-wrap: wrap; gap: 18px 28px; justify-content: space-between; }
+  footer a { color: var(--muted); text-decoration: none; }
+</style>
+
+<div class="wrap">
+  <nav class="nav" aria-label="Site">
+    <a class="brand" href="#top"><span class="dot" aria-hidden="true"></span>Pocket Podcast</a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#clips">Clips</a></li>
+      <li><a href="#mac">PodMerge for Mac</a></li>
+      <li><a href="#keys">Your keys</a></li>
+    </ul>
+    <a class="btn primary" href="#get">Get the apps</a>
+  </nav>
+</div>
+
+<header class="wrap hero" id="top">
+  <div class="hero-head">
+    <p class="eyebrow">Multi-camera and single-camera podcast editing · iPhone, iPad and Mac</p>
+    <h1>Point your cameras at a conversation. Get the edit.</h1>
+    <p class="lede">Pocket Podcast listens for who's talking and cuts between your cameras on its own — one camera per guest, or a single wide shot it splits into one crop per person. Colour, trim, a transcript, social clips and the YouTube description come out of the same run.</p>
+    <div class="hero-cta" id="get">
+<span class="badge" role="img" aria-label="Download on the App Store">
+        <svg viewBox="0 0 120 40" width="162" height="54" xmlns="http://www.w3.org/2000/svg">
+          <rect x=".5" y=".5" width="119" height="39" rx="6" fill="#000" stroke="#a6a6a6"/>
+          <g transform="translate(9 8) scale(1.05)"><path fill="#fff" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9s-2-.9-3.3-.9C6.1 6.9 4.5 7.9 3.6 9.4c-1.9 3.3-.5 8.2 1.4 10.9.9 1.3 2 2.8 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.5.9c1.5 0 2.4-1.3 3.3-2.6 1-1.5 1.5-3 1.5-3.1-.1 0-2.8-1.1-2.8-4.7zM14 5.3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"/></g>
+          <text x="37" y="15.5" fill="#fff" font-family="-apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="7.6" letter-spacing=".1">Download on the</text>
+          <text x="36.5" y="31" fill="#fff" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif" font-size="17.5" font-weight="600" letter-spacing="-.2">App Store</text>
+        </svg>
+      </span>
+      <a class="btn" href="#mac">PodMerge for Mac</a>
+      <span class="note">Speech runs on the device. Optional cloud steps use your own keys.</span>
+    </div>
+  </div>
+
+  <div class="track" aria-label="Speaker timeline of a five-minute episode">
+    <div class="bar" aria-hidden="true">
+      <span class="a" style="flex:14"></span><span class="b" style="flex:6"></span><span class="a" style="flex:22"></span><span class="c" style="flex:3"></span><span class="b" style="flex:9"></span><span class="a" style="flex:5"></span><span class="b" style="flex:31"></span><span class="a" style="flex:4"></span><span class="b" style="flex:17"></span><span class="a" style="flex:11"></span><span class="b" style="flex:26"></span><span class="a" style="flex:8"></span><span class="c" style="flex:2"></span><span class="b" style="flex:19"></span>
+    </div>
+    <div class="ticks"><span>0:00</span><span>1:00</span><span>2:00</span><span>3:00</span><span>4:00</span><span>5:00</span></div>
+  </div>
+
+  <div class="hero-stage">
+    <figure class="device tablet" style="margin:0"><img src="img/ipad-18-landscape-main.jpg" width="1400" height="1050" alt="Pocket Podcast on iPad in landscape: two camera angles side by side, each assigned to a speaker, with the action buttons along the bottom"></figure>
+    <figure class="device phone" style="margin:0"><img src="img/iphone-06-preview.jpg" width="720" height="1565" alt="The preview on iPhone, playing the edited conversation"></figure>
+  </div>
+</header>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How it works</p>
+      <h2>From camera files to a finished episode, in the order you'd do it by hand.</h2>
+      <p class="lede">Each step is one button. The app never asks you to scrub a timeline.</p>
+    </div>
+
+    <div class="step">
+      <div class="copy">
+        <p class="eyebrow">Import</p>
+        <h3>As many cameras as you have, or one wide shot</h3>
+        <p>Bring in a file per camera from your Camera Roll or Files, or record straight into the app — two cameras, three, a whole panel. With a single camera, Pocket Podcast finds the faces and splits the frame into one crop per person, so a one-camera setup still cuts like several.</p>
+        <ul>
+          <li>Each video is checked and copied once; duplicates are ignored.</li>
+          <li>Any resolution — the export matches your best camera.</li>
+        </ul>
+      </div>
+      <div class="art">
+        <div class="pair">
+          <figure class="device phone" style="margin:0"><img src="img/iphone-02-import-menu.jpg" width="720" height="1565" alt="Import menu on iPhone: Camera Roll, Files, Record"></figure>
+          <figure class="device tablet" style="margin:0"><img src="img/ipad-03-two-videos.jpg" width="1100" height="1467" alt="Two imported camera files on iPad, Identify Speakers highlighted"></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step flip">
+      <div class="copy">
+        <p class="eyebrow">Identify speakers</p>
+        <h3>It listens before it cuts</h3>
+        <p>Speaker identification runs on the device with no upload. Turn on ElevenLabs Scribe instead and you also get a word-level transcript with every turn timed — the app asks before it spends your credit.</p>
+        <ul>
+          <li>Every camera's audio is merged and analysed as one recording.</li>
+          <li>Cross-talk and stray voices are kept out of the cut.</li>
+        </ul>
+      </div>
+      <div class="art">
+        <div class="pair">
+          <figure class="device phone" style="margin:0"><img src="img/iphone-04-identifying.jpg" width="720" height="1565" alt="Analysing speakers progress on iPhone"></figure>
+          <figure class="device phone" style="margin:0"><img src="img/iphone-05d-main-with-transcript.jpg" width="720" height="1565" alt="After identification: speakers assigned, Transcript and Clips buttons now in the bar"></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="copy">
+        <p class="eyebrow">Assign</p>
+        <h3>Tell it who's on which camera</h3>
+        <p>One tap per camera, and a camera can carry more than one person. When each camera has exactly one, the app assigns them for you. From here the edit is decided: the shot follows whoever is speaking, with reaction cutaways on long turns.</p>
+      </div>
+      <div class="art">
+        <figure class="device tablet" style="margin:0"><img src="img/ipad-05-speakers-assigned.jpg" width="1100" height="1467" alt="Speaker 1 and Speaker 2 assigned to two cameras on iPad, Preview highlighted"></figure>
+      </div>
+    </div>
+
+    <div class="step flip">
+      <div class="copy">
+        <p class="eyebrow">Preview and polish</p>
+        <h3>The same controls on every device</h3>
+        <p>Watch the cut before you commit. Grade the picture with levels and a live histogram — or press Auto Levels once — trim the ends, and switch on noise reduction. Loudness normalization to −16 LUFS is a toggle in Settings.</p>
+        <ul>
+          <li>Levels, exposure, temperature, tint, shadows, highlights, saturation, denoise, sharpen.</li>
+          <li>Trim handles sit on a filmstrip of the actual edit.</li>
+        </ul>
+      </div>
+      <div class="art">
+        <figure class="device tablet" style="margin:0"><img src="img/ipad-20-landscape-preview-grade.jpg" width="1400" height="1050" alt="Preview on iPad in landscape with the colour grade panel open: levels histogram and correction sliders"></figure>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="copy">
+        <p class="eyebrow">Trim</p>
+        <h3>Set the in and out on the edit itself</h3>
+        <p>The filmstrip shows the cut, not the source, so you trim what the audience will see. Everything downstream — the transcript, the clips — follows the trimmed timeline.</p>
+      </div>
+      <div class="art">
+        <div class="pair">
+          <figure class="device phone" style="margin:0"><img src="img/iphone-09-trim.jpg" width="720" height="1565" alt="Trim mode on iPhone with handles on a filmstrip"></figure>
+          <figure class="device phone" style="margin:0"><img src="img/iphone-07-preview-menu.jpg" width="720" height="1565" alt="Preview menu: Noise Reduction, Color Grade, Trim"></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step flip">
+      <div class="copy">
+        <p class="eyebrow">Export</p>
+        <h3>Name it once</h3>
+        <p>The name you give the export becomes a folder. The video, its transcript, the thumbnail, the clips and the metadata all land there — one place to hand to whoever publishes.</p>
+        <ul>
+          <li>Opens in the player when it's done; share from there.</li>
+          <li>Visible in the Files app under Pocket Podcast.</li>
+        </ul>
+      </div>
+      <div class="art">
+        <div class="pair">
+          <figure class="device phone" style="margin:0"><img src="img/iphone-11-save-as.jpg" width="720" height="1565" alt="Save As prompt with the name Interview with Adaeze"></figure>
+          <figure class="device phone" style="margin:0"><img src="img/iphone-16-files-app.jpg" width="720" height="1565" alt="Files app showing the episode folder: video, transcript, teaser clip, clips.json and metadata.md"></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="copy">
+        <p class="eyebrow">Transcript</p>
+        <h3>Every turn, named and timed</h3>
+        <p>Name the speakers once and the whole transcript updates. Export it as SRT, WebVTT or plain text; the SRT is also written next to the video automatically.</p>
+      </div>
+      <div class="art">
+        <figure class="device phone" style="margin:0"><img src="img/iphone-10-transcript.jpg" width="720" height="1565" alt="Transcript view: speaker name fields, then colour-coded bubbles per turn with timestamps"></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="clips">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Clips and metadata</p>
+      <h2>The episode is done. Now the posts.</h2>
+      <p class="lede">Press Clips and the transcript goes to Claude Sonnet 5 through OpenRouter, with your key. It nominates moments; the app checks every one against the transcript, snaps the edges to words, and cuts them from the export. A second call writes the YouTube copy.</p>
+    </div>
+
+    <div class="clips">
+      <div style="display:grid;gap:18px">
+        <div class="types" aria-label="Clip types">
+          <div><b>Teaser</b><span>15–40 s · cold open</span></div>
+          <div><b>Reel</b><span>30–60 s · self-contained</span></div>
+          <div><b>Long-form</b><span>2–5 min · a whole story</span></div>
+        </div>
+        <div class="folder" aria-label="Episode folder contents">
+          <div class="head"><span>Interview with Adaeze</span><span>5 items</span></div>
+          <ul>
+            <li><span class="ic vid"></span><span>Interview with Adaeze.mov</span><span class="size">85.7 MB</span></li>
+            <li><span class="ic txt"></span><span>Interview with Adaeze.srt</span><span class="size">11 KB</span></li>
+            <li><span class="ic vid"></span><span>Interview with Adaeze_teaser_1.mov</span><span class="size">25.3 MB</span></li>
+            <li><span class="ic"></span><span>clips.json</span><span class="size">576 B</span></li>
+            <li><span class="ic md"></span><span>metadata.md</span><span class="size">2 KB</span></li>
+          </ul>
+        </div>
+        <div class="pair" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <figure class="device phone" style="margin:0"><img src="img/iphone-14-clips-confirm.jpg" width="720" height="1565" alt="Find Clips with OpenRouter? confirmation with the cost per hour"></figure>
+          <figure class="device phone" style="margin:0"><img src="img/iphone-15-clips-done.jpg" width="720" height="1565" alt="Clips Written dialog with Open in Files"></figure>
+        </div>
+      </div>
+
+      <div class="md" aria-label="Example metadata.md">
+        <span class="h">metadata.md</span>
+        <div>
+          <span class="h" style="color:var(--faint)">Titles</span>
+          <ul>
+            <li>From Research Assistant to Founder: Adaeze's Unlikely Path</li>
+            <li>The Problem She Couldn't Stop Noticing</li>
+            <li>Cleaning Other People's Data Taught Her This</li>
+            <li>Why the Idea Took Years, Not a Weekend</li>
+          </ul>
+        </div>
+        <div>
+          <span class="h" style="color:var(--faint)">Description</span>
+          <p>Daniel sits down with Adaeze to trace the years before the work she's known for — a research job spent tidying other people's data, and the pattern she kept running into until it became the thing she had to build. A conversation about noticing, patience and starting late.</p>
+        </div>
+        <div>
+          <span class="h" style="color:var(--faint)">Chapters</span>
+          <div style="display:grid;gap:4px;margin-top:6px">
+            <div class="ch"><span class="mono">0:00</span><span>Welcome and a long-awaited guest</span></div>
+            <div class="ch"><span class="mono">0:11</span><span>Before the work people know</span></div>
+            <div class="ch"><span class="mono">0:26</span><span>The problem, over and over</span></div>
+            <div class="ch"><span class="mono">1:17</span><span>Deciding to build it</span></div>
+            <div class="ch"><span class="mono">3:02</span><span>What she'd tell her earlier self</span></div>
+          </div>
+        </div>
+        <div>
+          <span class="h" style="color:var(--faint)">Tags</span>
+          <p class="mono" style="font-size:.85rem">founder story, research, career change, product design, podcast interview, starting late</p>
+        </div>
+        <p class="mono" style="font-size:.78rem;color:var(--faint)">Example output. Titles ≤ 100 characters; chapters start at 0:00 and are at least 10 s apart, as YouTube requires.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Under the hood</p>
+      <h2>Made for the way podcasts are actually recorded.</h2>
+    </div>
+    <div class="grid">
+      <div><span class="k">SPEECH</span><h3>On-device speaker identification</h3><p>A CoreML diarization model runs locally. No account, no upload, no waiting on a queue.</p></div>
+      <div><span class="k">TRANSCRIPT</span><h3>ElevenLabs Scribe, optional</h3><p>Word-level timing and speaker labels for the full transcript, clips and chapters. One upload of the merged audio per episode.</p></div>
+      <div><span class="k">SINGLE CAMERA</span><h3>One wide shot, a crop per speaker</h3><p>Faces are found in the frame and each speaker gets their own eyeline-aligned crop, so a one-camera setup cuts like a multi-camera one.</p></div>
+      <div><span class="k">PICTURE</span><h3>Levels with a histogram</h3><p>Auto Levels reads the untouched frame, so pressing it twice gives the same answer. Grade, trim and noise reduction combine without surprises.</p></div>
+      <div><span class="k">SOUND</span><h3>Noise reduction and loudness</h3><p>Optional noise reduction on the mix and normalization to a target LUFS on export.</p></div>
+      <div><span class="k">FRAME</span><h3>Thumbnail in one tap</h3><p>A composite of the speakers from the cut, written into the episode folder.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="mac">
+  <div class="wrap mac-sec">
+    <div class="copy">
+      <p class="eyebrow">PodMerge for Mac</p>
+      <h2>Same engine. Bigger screen, bigger files.</h2>
+      <p>PodMerge is the desktop version. Drop the camera files onto the window, identify speakers, and preview and transcript open in their own windows so you can keep both up. Export goes through the standard save panel and opens in QuickTime when it's done; the clips and metadata land in a folder beside the file.</p>
+      <ul>
+        <li>Drag-and-drop import; any number of cameras.</li>
+        <li>Preview, colour grade and trim in a resizable window.</li>
+        <li>Transcript window with SRT, WebVTT and plain-text export.</li>
+        <li>Clips and metadata with the same OpenRouter flow.</li>
+      </ul>
+      <div><span class="badge" role="img" aria-label="Download on the Mac App Store">
+        <svg viewBox="0 0 150 40" width="202" height="54" xmlns="http://www.w3.org/2000/svg">
+          <rect x=".5" y=".5" width="149" height="39" rx="6" fill="#000" stroke="#a6a6a6"/>
+          <g transform="translate(9 8) scale(1.05)"><path fill="#fff" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9s-2-.9-3.3-.9C6.1 6.9 4.5 7.9 3.6 9.4c-1.9 3.3-.5 8.2 1.4 10.9.9 1.3 2 2.8 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.5.9c1.5 0 2.4-1.3 3.3-2.6 1-1.5 1.5-3 1.5-3.1-.1 0-2.8-1.1-2.8-4.7zM14 5.3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.5z"/></g>
+          <text x="37" y="15.5" fill="#fff" font-family="-apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="7.6" letter-spacing=".1">Download on the</text>
+          <text x="36.5" y="31" fill="#fff" font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif" font-size="17.5" font-weight="600" letter-spacing="-.2">Mac App Store</text>
+        </svg>
+      </span></div>
+    </div>
+    <figure class="device mac" style="margin:0" aria-label="PodMerge window">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="slot">PodMerge · screenshot to come</div>
+    </figure>
+  </div>
+</section>
+
+<section id="keys">
+  <div class="wrap keys">
+    <div class="copy">
+      <p class="eyebrow">Your keys, your account</p>
+      <h2>Cloud steps are optional and billed to you, not through us.</h2>
+      <p>Speaker identification and the whole edit run on the device. If you want a transcript, clips and metadata, paste your own ElevenLabs and OpenRouter keys in Settings. They're stored in the Keychain, hidden in the fields, and sent only to those two services.</p>
+      <p>Every request to OpenRouter is sent with data collection denied, whatever the account's defaults.</p>
+      <span class="cost">Clips + metadata ≈ $0.15 per hour of audio</span>
+    </div>
+    <figure class="device phone" style="margin:0"><img src="img/iphone-17-settings.jpg" width="720" height="1565" alt="Settings: ElevenLabs and OpenRouter API key fields with the keys hidden, loudness normalization toggle"></figure>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="track thin" aria-hidden="true" style="padding-block:8px 0">
+    <div class="bar"><span class="b" style="flex:9"></span><span class="a" style="flex:14"></span><span class="b" style="flex:20"></span><span class="c" style="flex:2"></span><span class="a" style="flex:7"></span><span class="b" style="flex:12"></span><span class="a" style="flex:16"></span></div>
+  </div>
+  <footer>
+    <div class="row">
+      <span>Pocket Podcast for iPhone and iPad · PodMerge for Mac</span>
+      <span><a href="privacy.html">Privacy</a> &nbsp;·&nbsp; <a href="#">Support</a> &nbsp;·&nbsp; <a href="mailto:">Contact</a></span>
+    </div>
+    <p>Not intended for recordings containing protected health information. ElevenLabs, OpenRouter and Claude are trademarks of their respective owners; you contract with them directly under your own account.</p>
+  </footer>
+</div>
