@@ -1,0 +1,380 @@
+/* Tinnitus Aid Pro
+   ----------------
+   The palette is the app's own, read from Assets.xcassets: BrandPurple,
+   SpectrumBar, GridLine, AxisLabel and ScreenBackground, light and dark.
+   Figures are set in mono throughout, because frequencies and decibels are
+   what this subject actually talks in. */
+
+:root {
+  --paper: #fbfafd;
+  --paper-2: #f4f1f9;
+  --ink: #17121f;
+  --muted: #6e6480;
+  --faint: #9a92a8;
+  --rule: #e7def5;          /* GridLine */
+  --rule-strong: #d5c7ee;
+  --brand: #6a0dad;         /* BrandPurple */
+  --brand-ink: #ffffff;     /* OnBrand */
+  --spectrum: #8a3fc0;      /* SpectrumBar */
+  --axis-label: #b79fdd;    /* AxisLabel */
+  --notch-wash: rgba(106, 13, 173, 0.06);
+  --shadow: 0 24px 60px -34px rgba(23, 18, 31, 0.45);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #101014;       /* ScreenBackground, dark */
+    --paper-2: #17161d;
+    --ink: #f2eef8;
+    --muted: #a79cb8;
+    --faint: #7c7290;
+    --rule: #2b2340;
+    --rule-strong: #5e4a88;
+    --brand: #8b39d6;
+    --brand-ink: #ffffff;
+    --spectrum: #b86be8;
+    --axis-label: #9a7fcf;
+    --notch-wash: rgba(184, 107, 232, 0.10);
+    --shadow: 0 24px 60px -34px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper: #101014;
+  --paper-2: #17161d;
+  --ink: #f2eef8;
+  --muted: #a79cb8;
+  --faint: #7c7290;
+  --rule: #2b2340;
+  --rule-strong: #5e4a88;
+  --brand: #8b39d6;
+  --brand-ink: #ffffff;
+  --spectrum: #b86be8;
+  --axis-label: #9a7fcf;
+  --notch-wash: rgba(184, 107, 232, 0.10);
+  --shadow: 0 24px 60px -34px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Public Sans", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: Fraunces, Georgia, "Times New Roman", serif;
+  font-variation-settings: "SOFT" 20, "WONK" 1;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2.3rem, 5.4vw, 3.9rem); font-weight: 700; }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.5rem); }
+h3 { font-size: clamp(1.15rem, 1.8vw, 1.35rem); }
+p { margin: 0; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--rule-strong); }
+a:hover { text-decoration-color: var(--brand); }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 3px; }
+
+.mono, .num {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "zero" 1;
+}
+
+.wrap {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 44px);
+}
+
+.eyebrow {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.lede { font-size: 1.18rem; color: var(--muted); max-width: 62ch; }
+.measure { max-width: 66ch; }
+
+/* ---------- nav */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
+  font-size: 1.12rem;
+  letter-spacing: -0.01em;
+}
+.brand .glyph {
+  width: 26px;
+  height: 12px;
+  align-self: center;
+  color: var(--brand);
+}
+.nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
+.nav ul a { color: var(--muted); text-decoration: none; }
+.nav ul a:hover { color: var(--ink); }
+@media (max-width: 720px) { .nav ul { display: none; } }
+
+/* ---------- hero */
+.hero { padding-block: clamp(44px, 7vw, 92px) clamp(28px, 4vw, 56px); display: grid; gap: 26px; }
+.hero-head { display: grid; gap: 20px; max-width: 46ch; }
+.hero-figure { margin: 0; display: grid; gap: 14px; }
+.hero-spectrum { width: 100%; height: auto; display: block; }
+.hero-figure figcaption {
+  font-size: 0.9rem;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  max-width: 78ch;
+}
+
+/* the drawn spectrum */
+.hero-spectrum .bar { fill: var(--spectrum); opacity: 0.55; }
+.hero-spectrum .shoulder { fill: var(--brand); }
+.hero-spectrum .notch { fill: var(--rule-strong); }
+.hero-spectrum .notch-zone { fill: var(--notch-wash); }
+.hero-spectrum .axis { stroke: var(--rule-strong); stroke-width: 1; }
+.hero-spectrum .centre { stroke: var(--brand); stroke-width: 1; stroke-dasharray: 3 4; }
+.hero-spectrum .tick {
+  fill: var(--faint);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  text-anchor: middle;
+}
+.hero-spectrum .callout {
+  fill: var(--brand);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+  text-anchor: middle;
+}
+.hero-spectrum .mark {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  text-anchor: middle;
+}
+.hero-spectrum .mark-shoulder { fill: var(--brand); }
+.hero-spectrum .mark-notch { fill: var(--faint); }
+
+/* ---------- sections */
+section { padding-block: clamp(46px, 7vw, 88px); border-top: 1px solid var(--rule); }
+.sec-head { display: grid; gap: 14px; max-width: 58ch; margin-bottom: clamp(28px, 4vw, 48px); }
+
+.rows { display: grid; gap: clamp(34px, 5vw, 64px); }
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(26px, 4vw, 56px);
+  align-items: center;
+}
+.row.flip .copy { order: 2; }
+.row .copy { display: grid; gap: 14px; }
+.row p { color: var(--muted); }
+.row ul { margin: 4px 0 0; padding-left: 18px; color: var(--muted); display: grid; gap: 7px; }
+.row li::marker { color: var(--brand); }
+@media (max-width: 860px) {
+  .row { grid-template-columns: 1fr; }
+  .row.flip .copy { order: 0; }
+}
+
+/* ---------- figures: real screenshots drop straight in */
+.shot { margin: 0; display: grid; gap: 12px; justify-items: center; }
+.shot img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: var(--shadow); }
+.shot figcaption { font-size: 0.88rem; color: var(--faint); text-align: center; max-width: 42ch; }
+.shot.portrait { max-width: 300px; margin-inline: auto; }
+
+/* A screenshot with labels drawn over it. The SVG carries the source image's
+   own pixel dimensions as its viewBox, so the two scale as one and a label
+   cannot drift off the thing it names. */
+.annot { position: relative; display: block; width: 100%; }
+/* overflow visible so a label that reaches above its baseline is not cut by
+   the SVG's own box, the way the hero's callout was. */
+.annot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.annot .tag {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 30px;
+  font-weight: 600;
+  fill: var(--brand);
+  text-anchor: middle;
+}
+.annot .tag.vert { font-size: 26px; fill: var(--faint); letter-spacing: 0.04em; }
+.annot .lead { stroke: var(--brand); stroke-width: 2.5; }
+
+/* A row whose figure runs the full width under the copy, for a sequence of
+   screens rather than a single one. */
+.row.stacked { grid-template-columns: 1fr; }
+.row.stacked .copy { max-width: 62ch; }
+
+.shot-steps {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 3vw, 34px);
+  justify-items: center;
+  max-width: 760px;
+}
+.shot-steps .step { display: grid; gap: 10px; justify-items: center; }
+.shot-steps img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.shot-steps .step-label {
+  font-size: 0.84rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.shot-steps .step-n {
+  font: 600 0.72rem/1 var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  color: var(--brand-ink);
+  background: var(--brand);
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+}
+.shot-steps figcaption {
+  grid-column: 1 / -1;
+  font-size: 0.88rem;
+  color: var(--faint);
+  text-align: center;
+  max-width: 46ch;
+  margin-inline: auto;
+}
+.shot.landscape { max-width: 560px; margin-inline: auto; }
+
+@media (max-width: 560px) {
+  .shot-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .shot-steps .step-label { font-size: 0.74rem; gap: 5px; }
+  .shot-steps .step-n { width: 17px; height: 17px; font-size: 0.66rem; }
+}
+
+/* Awaiting artwork. Sized to the real thing so the layout does not move
+   when the screenshot arrives. */
+.awaiting {
+  width: 100%;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 14px;
+  background: var(--paper-2);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  text-align: center;
+  color: var(--faint);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+.shot.portrait .awaiting { aspect-ratio: 9 / 19.5; }
+.shot.landscape .awaiting { aspect-ratio: 19.5 / 9; }
+
+/* ---------- figures panel: the three numbers that define the filter */
+.specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.specs > div { background: var(--paper); padding: 20px 22px; display: grid; gap: 6px; }
+.specs .k { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-family: "JetBrains Mono", monospace; }
+.specs .v { font-family: "JetBrains Mono", monospace; font-size: 1.5rem; color: var(--brand); }
+.specs .d { font-size: 0.92rem; color: var(--muted); }
+@media (max-width: 720px) { .specs { grid-template-columns: 1fr; } }
+
+/* ---------- steps */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); counter-reset: step; }
+.steps > div { display: grid; gap: 10px; align-content: start; }
+.steps h3 { display: grid; gap: 10px; }
+.steps .n {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--brand);
+  letter-spacing: 0.1em;
+}
+.steps p { color: var(--muted); font-size: 0.97rem; }
+@media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+
+/* ---------- callout strip */
+.strip {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--brand);
+  border-radius: 10px;
+  padding: 22px 24px;
+  background: var(--paper-2);
+  display: grid;
+  gap: 8px;
+  max-width: 72ch;
+}
+.strip h3 { font-size: 1.1rem; }
+.strip p { color: var(--muted); }
+
+/* ---------- science page */
+.doc { padding-block: clamp(36px, 5vw, 64px); display: grid; gap: clamp(34px, 4vw, 52px); }
+.doc article { display: grid; gap: 16px; max-width: 72ch; }
+.doc article p { color: var(--ink); }
+.doc h2 { margin-bottom: 4px; }
+.doc .q { color: var(--muted); font-style: italic; }
+.doc sup a { color: var(--brand); text-decoration: none; font-family: "JetBrains Mono", monospace; font-size: 0.7em; }
+.refs { max-width: 72ch; display: grid; gap: 12px; }
+.refs ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; color: var(--muted); font-size: 0.94rem; }
+.refs li::marker { font-family: "JetBrains Mono", monospace; color: var(--faint); }
+.if-then {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: clamp(18px, 3vw, 28px);
+  background: var(--paper-2);
+  max-width: 72ch;
+}
+.if-then .k { font-family: "JetBrains Mono", monospace; font-size: 0.78rem; letter-spacing: 0.12em; color: var(--brand); }
+
+/* ---------- footer */
+footer {
+  border-top: 1px solid var(--rule);
+  padding-block: 34px 54px;
+  color: var(--faint);
+  font-size: 0.88rem;
+  display: grid;
+  gap: 14px;
+}
+footer .row-f { display: flex; flex-wrap: wrap; gap: 14px 26px; justify-content: space-between; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
