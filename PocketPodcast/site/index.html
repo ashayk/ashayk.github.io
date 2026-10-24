@@ -207,7 +207,7 @@
   /* caption style */
   .styling { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 5vw, 64px); align-items: center; margin-top: clamp(36px, 6vw, 72px); padding-top: clamp(36px, 6vw, 72px); border-top: 1px solid var(--line); }
   @media (max-width: 860px) { .styling { grid-template-columns: 1fr; } }
-  .styling figure { width: min(420px, 100%); margin-inline: auto; }
+  .styling figure { width: min(560px, 100%); margin-inline: auto; }
   .styling .copy { display: grid; gap: 16px; }
   .styling .copy p, .styling .copy li { color: var(--muted); }
   .styling .copy ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
@@ -710,7 +710,7 @@
       <div class="copy">
         <p class="eyebrow">Caption style</p>
         <h3>Refine the captions</h3>
-        <p>Captions define your style, so they're yours to set. Options for typeface, color, position, everything previews on a 9:16 frame.</p>
+        <p>Captions define your style, configure them accordingly. Options for fonts, color, position, animations, and everything previews on a 9:16 frame.</p>
 
         <div class="specs">
           <span>any installed font</span>
@@ -720,10 +720,10 @@
         </div>
 
         <ul>
-          <li><b>Judge it in the frame, not in a dialog.</b> The preview draws captions with the same glyphs the render uses, over a figure framed at the eyeline a clip actually crops to, so what you see is what burns in.</li>
+          <li><b>Judge it on your own footage.</b> The preview takes a frame from the episode you have loaded and crops it 9:16 exactly as a clip would, then draws captions with the same font the render uses.</li>
           <li><b>Drag the caption.</b> Set the position relative to speaker framing.</li>
-          <li><b>Typeface and case.</b> Any font on the machine, bold and italic, and upper, sentence or lower case. Lines are re-measured in the font you choose, so they break where they should.</li>
-          <li><b>Color, or none.</b> Pick the type color and the card behind it, or turn the background off and let the words sit straight on the picture.</li>
+          <li><b>Typeface and case.</b> Any font on the machine, easily set to upper, lower, or sentence case. Lines are re-measured on the font.</li>
+          <li><b>Color, or none.</b> Pick the font color and the card behind it, or turn the background off and let the words sit straight on the picture.</li>
           <li><b>Tune the bounce.</b> Adjust the animation style to suit the narrative.</li>
 
         </ul>
@@ -732,8 +732,8 @@
       </div>
 
       <figure class="device wide" style="margin:0">
-        <img src="img/ipad-60-caption-style.jpg" width="1000" height="1451" alt="The caption style sheet on iPad: a 9:16 preview with a silhouette and a caption card on the left, and controls for typeface, bold, italic, case, text and background color, position and motion on the right" loading="lazy">
-        <figcaption>Caption style &middot; preview, type, color, position, motion</figcaption>
+        <img src="img/ipad-60-caption-style.jpg" width="1600" height="1200" alt="The caption style sheet on iPad: a 9:16 preview showing a real frame from the episode, a speaker framed on the eyeline with a caption card over them, and controls for typeface, bold, italic, case, text and background color, position and motion on the right" loading="lazy">
+        <figcaption>Caption style &middot; previewed on a frame from your own episode</figcaption>
       </figure>
     </div>
   </div>
