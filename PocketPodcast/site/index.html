@@ -204,6 +204,29 @@
   .shorts .specs { display: flex; flex-wrap: wrap; gap: 8px; }
   .shorts .specs span { font-family: "IBM Plex Mono", monospace; font-size: .78rem; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--muted); }
 
+  /* caption style */
+  .styling { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(28px, 5vw, 64px); align-items: center; margin-top: clamp(36px, 6vw, 72px); padding-top: clamp(36px, 6vw, 72px); border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { .styling { grid-template-columns: 1fr; } }
+  .styling figure { width: min(420px, 100%); margin-inline: auto; }
+  .styling .copy { display: grid; gap: 16px; }
+  .styling .copy p, .styling .copy li { color: var(--muted); }
+  .styling .copy ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
+  .styling .copy ul b { color: var(--text); font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; }
+  .styling .specs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .styling .specs span { font-family: "IBM Plex Mono", monospace; font-size: .78rem; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--muted); }
+
+  /* from indy to pro */
+  .handoff { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: clamp(14px, 2.4vw, 26px); align-items: center; }
+  .handoff figure { margin: 0; }
+  .handoff .arrow { font-size: 1.6rem; color: var(--faint); line-height: 1; }
+  @media (max-width: 860px) { .handoff { grid-template-columns: 1fr; } .handoff .arrow { transform: rotate(90deg); justify-self: center; } }
+  .pro .copy { display: grid; gap: 16px; max-width: 820px; margin-top: clamp(30px, 5vw, 56px); }
+  .pro .copy p, .pro .copy li { color: var(--muted); }
+  .pro .copy ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
+  .pro .copy ul b { color: var(--text); font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; }
+  .pro .specs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pro .specs span { font-family: "IBM Plex Mono", monospace; font-size: .78rem; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--muted); }
+
   /* mac */
   .mac-sec { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
   @media (max-width: 860px) { .mac-sec { grid-template-columns: 1fr; } }
@@ -232,6 +255,7 @@
       <li><a href="#how">How it works</a></li>
       <li><a href="#clips">Clips & Meta</a></li>
       <li><a href="#mac">PodMerge for Mac</a></li>
+      <li><a href="#pro">Indy to Pro</a></li>
       <li><a href="#keys">Your keys</a></li>
     </ul>
     <a class="btn primary" href="#get">Get the apps</a>
@@ -672,13 +696,45 @@
         <ul>
           <li><b>No wide shots</b> The focus stays exclusively on the speakers.</li>
           <li><b>Framed on the speaker.</b> AI-based face detection frames the speaker correctly at each turn.</li>
-          <li><b>Your workflow passes through.</b> Colour grade, noise reduction, trim and any edits carry across from the export you approved. The vertical cut is a different framing of the same episode, optimised for shorts.</li>
+          <li><b>Your workflow passes through.</b> color grade, noise reduction, trim and any edits carry across from the export you approved. The vertical cut is a different framing of the same episode, optimised for shorts.</li>
           <li><b>Captions from the transcript.</b> Captions appear in the lower third, rendered directly into the video, each line arriving with a bounce.</li>
           <li><b>Everything you need.</b> A short Markdown file accompanies each clip with a title, description, and tags ready for publishing.</li>
         </ul>
 
         <p class="mono" style="font-size:.78rem;color:var(--faint)">Clips longer than three minutes stay 16:9 and are cut from the exported episode.</p>
       </div>
+    </div>
+
+    <!-- SCAFFOLDING: caption style sheet. Copy to be rewritten. -->
+    <div class="styling">
+      <div class="copy">
+        <p class="eyebrow">Caption style</p>
+        <h3>Refine the captions</h3>
+        <p>Captions define your style, so they're yours to set. Options for typeface, color, position, everything previews on a 9:16 frame.</p>
+
+        <div class="specs">
+          <span>any installed font</span>
+          <span>A &middot; Aa &middot; a</span>
+          <span>drag to position</span>
+          <span>reset to defaults</span>
+        </div>
+
+        <ul>
+          <li><b>Judge it in the frame, not in a dialog.</b> The preview draws captions with the same glyphs the render uses, over a figure framed at the eyeline a clip actually crops to, so what you see is what burns in.</li>
+          <li><b>Drag the caption.</b> Set the position relative to speaker framing.</li>
+          <li><b>Typeface and case.</b> Any font on the machine, bold and italic, and upper, sentence or lower case. Lines are re-measured in the font you choose, so they break where they should.</li>
+          <li><b>Color, or none.</b> Pick the type color and the card behind it, or turn the background off and let the words sit straight on the picture.</li>
+          <li><b>Tune the bounce.</b> Adjust the animation style to suit the narrative.</li>
+
+        </ul>
+
+        <p class="mono" style="font-size:.78rem;color:var(--faint)">Changed your mind after the fact? Press Clips again and the videos are cut once more with the new style, keeping the clips that were chosen and the notes beside them.</p>
+      </div>
+
+      <figure class="device wide" style="margin:0">
+        <img src="img/ipad-60-caption-style.jpg" width="1000" height="1451" alt="The caption style sheet on iPad: a 9:16 preview with a silhouette and a caption card on the left, and controls for typeface, bold, italic, case, text and background color, position and motion on the right" loading="lazy">
+        <figcaption>Caption style &middot; preview, type, color, position, motion</figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -722,6 +778,54 @@
       </span></div>
     </div>
     <figure class="device mac" style="margin:0"><img src="img/podmerge-30-single-cam-crops.jpg" width="1400" height="775" alt="PodMerge on Mac: a single wide shot split into two crop tiles, one per speaker, with speaker dropdowns and the action bar" loading="lazy"></figure>
+  </div>
+</section>
+
+<!-- SCAFFOLDING: FCPXML handoff. Copy to be rewritten. -->
+<section id="pro">
+  <div class="wrap pro">
+    <div class="sec-head">
+      <p class="eyebrow">FCPXML Timeline</p>
+      <h2>From Indy to Pro</h2>
+      <p>Finish in PodMerge or continue with other video editors.</p>
+    </div>
+
+    <div class="handoff">
+      <figure class="device wide">
+        <img src="img/podmerge-60-cameras.jpg" width="1600" height="1034" alt="PodMerge with three cameras loaded: host, guest and a wide two-shot, each with a speaker assigned" loading="lazy">
+        <figcaption>PodMerge · three cameras, speakers assigned</figcaption>
+      </figure>
+
+      <div class="arrow" aria-hidden="true">&rarr;</div>
+
+      <figure class="device wide">
+        <img src="img/podmerge-61-resolve-fcpxml.jpg" width="1600" height="1034" alt="DaVinci Resolve with the exported FCPXML imported: the cut on the timeline, the original cameras in the media pool and separate audio tracks" loading="lazy">
+        <figcaption>DaVinci Resolve · PodMerge Timeline</figcaption>
+      </figure>
+    </div>
+
+    <div class="copy">
+      <h3>Continue editing with a complete timeline.</h3>
+      <p>Enable in settings, and every export is accompanied by an FCPXML file: the industry-standard interchange format read by DaVinci Resolve, Final Cut Pro and the rest of the professional toolchain. Open it, and the edit arrives as a timeline, cut by cut, referencing your original video files.</p>
+
+      <div class="specs">
+        <span>FCPXML 1.9</span>
+        <span>accompanies the export</span>
+        <span>accompanies every clip</span>
+        <span>original video media</span>
+      </div>
+
+      <ul>
+        <li><b>Inherit PodMerge's AI-driven edit flow.</b> The hard part is done, now you can customise with teasers, ads, or extended export options.
+        </li>
+        <li><b>The original footage in the media pool.</b> The timeline references your video files, at full quality. Regrade, reframe and recut from the source.</li>
+        <li><b>Framing comes across.</b> Single-camera crops and vertical reframing arrive as transforms on the clips, so what you approved is what opens, and it is still editable.</li>
+        <li><b>Audio layout.</b> One track when the videos contain the same audio, every audio track when they don't. Audio merges to retain fidelity during off-camera reactions, etc....</li>
+        <li><b>Clips too.</b> Each optionally-generated clip gets its own edit list and subtitle file, so a short can be finished in an editor as readily as the episode.</li>
+      </ul>
+
+      <p class="mono" style="font-size:.78rem;color:var(--faint)">Off by default. Settings &rsaquo; Write an edit list (FCPXML).</p>
+    </div>
   </div>
 </section>
 
